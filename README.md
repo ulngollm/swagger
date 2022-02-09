@@ -2,8 +2,7 @@
 
 Минимально рекомендуемая версия `docker` - `17.06.0`, совместимая с используемым в проекте `docker-compose.yml`.   
 Если ваша версия ниже, изменить `version` в `docker-compose.yml` в соотвестсвии
-с [таблицей совместимости](https://docs.docker.com/compose/compose-file/compose-versioning/#compatibility-matrix "Docker documentation")
-.
+с [таблицей совместимости](https://docs.docker.com/compose/compose-file/compose-versioning/#compatibility-matrix "Docker documentation").
 
 ## Запуск проекта
 
