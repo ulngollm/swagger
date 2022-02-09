@@ -1,0 +1,179 @@
+openapi: 3.0.3
+info:
+  title: Demo
+  description: Demo
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  /api/v1/register:
+    post:
+      summary: Регистрация нового пользователя
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        201:
+          description: Пользователь успешно зарегистрирован.  Вернет токен для авторизации
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    format: jwt
+                    example: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsb2NhbGhvc3QiLCJpYXQiOjE2NDQzMjI2OTksIm5iZiI6MTY0NDMyMjY5OSwiZXhwIjoxNjQ2OTE0Njk5fQ.JsV9reKd9U-XZBBh-o4_yp3QOlkTPhJMji5TtpWW5AE
+        200:
+          description: Пользователь существует
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: User is exists
+        412:
+          description: Ошибка валидации. Возращает имя свойства и его ошибку
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  login:
+                    type: array
+                    items:
+                      type: string
+                    example: [ "Минимальная длина - 8 символов" ]
+
+  /api/v1/auth:
+    post:
+      summary: Авторизация по логину и паролю
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                login:
+                  type: string
+                  example: 'ascjhg32'
+                password:
+                  type: string
+                  example: '123dkj92354c'
+                  minLength: 8
+      responses:
+        200:
+          description: Пользователь успешно авторизован
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    format: jwt
+                    example: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsb2NhbGhvc3QiLCJpYXQiOjE2NDQzMjI2OTksIm5iZiI6MTY0NDMyMjY5OSwiZXhwIjoxNjQ2OTE0Njk5fQ.JsV9reKd9U-XZBBh-o4_yp3QOlkTPhJMji5TtpWW5AE
+
+        401:
+          description: Unauthorized. Пользователь не существует или неправильный пароль
+
+        412:
+          description: Ошибка валидации. Возращает имя свойства и его ошибку
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  login:
+                    type: array
+                    items:
+                      type: string
+                    example: [ "Минимальная длина - 8 символов" ]
+
+  /api/v1/profile/{id}:
+    get:
+      summary: Получить данные о пользователе по id
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          description: id пользователя
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Информация о пользователе (одна и та же, только id другой)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: 'Tony'
+                  gender:
+                    type: string
+                    example: 'male'
+        401:
+          description: Unauthorized. Информация доступна только авторизованному пользователю
+  /api/v1/postman/auth:
+    post:
+      summary: Basic authorization через внешний сервис (Postman)
+      security:
+        - basicAuth: [ ]
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'Аuthorized'
+        401:
+          description: Unauthorized
+  /api/v1/logout:
+    get:
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+components:
+  securitySchemes:
+    basicAuth: # <-- arbitrary name for the security scheme
+      type: http
+      scheme: basic
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        login:
+          type: string
+          example: 'Marina.uo234'
+        password:
+          type: string,
+          example: '123rcjkhz'
+          minLength: 8
+        role:
+          type: integer
+          example: 1
+      required:
+        - login
+        - password
