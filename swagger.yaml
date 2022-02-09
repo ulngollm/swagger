@@ -129,6 +129,7 @@ paths:
         - basicAuth: [ ]
       responses:
         200:
+          description: Успешно
           content:
             application/json:
               schema:
@@ -143,6 +144,7 @@ paths:
     get:
       responses:
         200:
+          description: Успешно
           content:
             application/json:
               schema:
@@ -153,7 +155,7 @@ paths:
                     example: true
 components:
   securitySchemes:
-    basicAuth: # <-- arbitrary name for the security scheme
+    basicAuth:
       type: http
       scheme: basic
     bearerAuth:
@@ -168,7 +170,7 @@ components:
           type: string
           example: 'Marina.uo234'
         password:
-          type: string,
+          type: string
           example: '123rcjkhz'
           minLength: 8
         role:
